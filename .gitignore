@@ -1,0 +1,6 @@
+Unix_Sockets/Socket-IPC-Client/app/.cxx
+Unix_Sockets/Socket-IPC-Server/app/.cxx
+gradlew
+gradlew.bat
+Unix_Sockets/Socket-IPC-Client/gradle/wrapper
+gradle-wrapper.properties
