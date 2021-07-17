@@ -1,11 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
+    buildToolsVersion '29.0.3'
     defaultConfig {
         applicationId "com.spencerfricke.socket_ipc_server"
         minSdkVersion 24
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         externalNativeBuild {
@@ -25,6 +26,8 @@ android {
             path "CMakeLists.txt"
         }
     }
+
+    ndkVersion '21.3.6528147'
 }
 
 dependencies {
