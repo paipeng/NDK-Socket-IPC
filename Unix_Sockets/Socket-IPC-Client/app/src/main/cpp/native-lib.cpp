@@ -71,8 +71,11 @@ void sendColor(uint8_t color) {
 // Handles input touches to the screen
 int32_t handle_input(struct android_app* app, AInputEvent* event) {
 	if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
-		if (AInputEvent_getSource(event) == AINPUT_SOURCE_TOUCHSCREEN) {
-			if (AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_DOWN) {
+
+        LOGI("input source: %d", AInputEvent_getSource(event));
+		if (AInputEvent_getSource(event) == AINPUT_SOURCE_TOUCHSCREEN || AInputEvent_getSource(event) == AINPUT_SOURCE_MOUSE) {
+			LOGI("action: %d", AMotionEvent_getAction(event));
+			if (AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_DOWN || AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_HOVER_ENTER) {
 				float x = AMotionEvent_getX(event,0);
 				float y = AMotionEvent_getY(event,0);
 				int32_t h_width = ANativeWindow_getWidth(app->window)/2;
