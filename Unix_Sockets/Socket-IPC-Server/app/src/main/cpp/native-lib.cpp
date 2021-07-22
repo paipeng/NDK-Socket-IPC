@@ -12,11 +12,14 @@
 #define SOCKET_NAME "serverSocket"
 #define BUFFER_SIZE 16
 
+#define  LOCALSOCKET_PATH   "defined-socket"
+const char name[] = "\0your.local.socket.address";
 void* setupServer(void* na) {
 	int ret;
 	struct sockaddr_un server_addr;
 	int socket_fd;
 	int data_socket;
+	int len;
 	uint8_t buffer[BUFFER_SIZE];
 	char socket_name[108]; // 108 sun_path length max
 
@@ -39,9 +42,18 @@ void* setupServer(void* na) {
 	// clear for safty
 	memset(&server_addr, 0, sizeof(struct sockaddr_un));
 	server_addr.sun_family = AF_UNIX; // Unix Domain instead of AF_INET IP domain
-	strncpy(server_addr.sun_path, socket_name, sizeof(server_addr.sun_path) - 1); // 108 char max
+	//strncpy(server_addr.sun_path, "serverSocketABC", sizeof(server_addr.sun_path) - 1); // 108 char max
+	server_addr.sun_path[0] = '\0';
+	//strncpy(server_addr.sun_path, socket_name, sizeof(server_addr.sun_path) - 1);
+	strcpy(&server_addr.sun_path[1], SOCKET_NAME );
+	//memcpy(server_addr.sun_path, name, sizeof(name) - 1);
+	len = sizeof(server_addr) - sizeof(server_addr.sun_path) + strlen(server_addr.sun_path+1) + 1;
 
-	ret = bind(socket_fd, (const struct sockaddr *) &server_addr, sizeof(struct sockaddr_un));
+	LOGE("socket addr len: %d", len);
+	len = offsetof(struct sockaddr_un, sun_path) + 1 + strlen(&server_addr.sun_path[1]);
+	LOGE("socket addr len: %d", len);
+
+	ret = bind(socket_fd, (const struct sockaddr *) &server_addr, len);
 	if (ret < 0) {
 		LOGE("bind: %s", strerror(errno));
 		exit(EXIT_FAILURE);

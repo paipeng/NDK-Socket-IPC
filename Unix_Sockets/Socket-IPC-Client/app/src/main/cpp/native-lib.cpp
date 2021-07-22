@@ -9,8 +9,10 @@
 #include <unistd.h>
 
 // Can be anything if using abstract namespace
-#define SOCKET_NAME "serverSocket"
+#define SOCKET_NAME "\0serverSocket"
 #define BUFFER_SIZE 16
+
+const char name[] = "\0your.local.socket.address";
 
 static int data_socket;
 static struct sockaddr_un server_addr;
@@ -33,16 +35,18 @@ void setupClient(void) {
 	// clear for safty
 	memset(&server_addr, 0, sizeof(struct sockaddr_un));
 	server_addr.sun_family = AF_UNIX; // Unix Domain instead of AF_INET IP domain
-	strncpy(server_addr.sun_path, socket_name, sizeof(server_addr.sun_path) - 1); // 108 char max
+	//strncpy(server_addr.sun_path, socket_name, sizeof(server_addr.sun_path) - 1); // 108 char max
+	memcpy(server_addr.sun_path, name, sizeof(name) - 1);
 
 	// Assuming only one init connection for demo
 	int ret = connect(data_socket, (const struct sockaddr *) &server_addr, sizeof(struct sockaddr_un));
 	if (ret < 0) {
 		LOGE("connect: %s", strerror(errno));
-		exit(EXIT_FAILURE);
+		//exit(EXIT_FAILURE);
+	} else {
+		LOGI("Client Setup Complete");
 	}
 
-	LOGI("Client Setup Complete");
 }
 
 void sendColor(uint8_t color) {
